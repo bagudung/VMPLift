@@ -30,14 +30,25 @@ jobs:
         run: |
           cmake -B build -S . -A x64 `
             -DCMAKE_TOOLCHAIN_FILE="${{ env.VCPKG_ROOT }}/scripts/buildsystems/vcpkg.cmake" `
-            -DVCPKG_TARGET_TRIPLET=x64-windows-static
+            -DVCPKG_TARGET_TRIPLET=x64-windows
 
       - name: Build
         run: cmake --build build --config Release --parallel
+
+      - name: Bundle runtime DLLs next to the exe
+        shell: pwsh
+        run: |
+          & "$env:VCPKG_ROOT/scripts/buildsystems/msbuild/applocal.ps1" `
+            -targetBinary "build/Release/vmp-lift.exe" `
+            -installedDir "build/vcpkg_installed/x64-windows/bin"
+          Write-Host "===== files that will be uploaded ====="
+          Get-ChildItem "build/Release" | Select-Object -ExpandProperty Name
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: vmp-lift-windows-x64
-          path: build/Release/vmp-lift.exe
+          path: |
+            build/Release/vmp-lift.exe
+            build/Release/*.dll
           if-no-files-found: error
