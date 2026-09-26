@@ -1,8 +1,10 @@
 {
   "name": "vmp-lift",
   "version-string": "0.1.0",
+  "builtin-baseline": "09adfdc8cdad76345b7cc7f3305899e1cbd66297",
   "dependencies": [
     "capstone",
     "nlohmann-json"
   ]
 }
+
