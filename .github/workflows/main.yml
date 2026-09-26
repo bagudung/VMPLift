@@ -15,14 +15,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Resolve latest vcpkg commit
+        id: vcpkg-commit
+        shell: bash
+        run: echo "sha=$(git ls-remote https://github.com/microsoft/vcpkg HEAD | cut -f1)" >> "$GITHUB_OUTPUT"
+
       - name: Setup vcpkg (installs deps from vcpkg.json)
         uses: lukka/run-vcpkg@v11
         with:
           vcpkgJsonGlob: 'vcpkg.json'
+          vcpkgGitCommitId: ${{ steps.vcpkg-commit.outputs.sha }}
 
       - name: Configure CMake
-        env:
-          VCPKG_BINARY_SOURCES: "clear"
         run: |
           cmake -B build -S . -A x64 `
             -DCMAKE_TOOLCHAIN_FILE="${{ env.VCPKG_ROOT }}/scripts/buildsystems/vcpkg.cmake" `
