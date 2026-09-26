@@ -21,6 +21,8 @@ jobs:
           vcpkgJsonGlob: 'vcpkg.json'
 
       - name: Configure CMake
+        env:
+          VCPKG_BINARY_SOURCES: "clear"
         run: |
           cmake -B build -S . -A x64 `
             -DCMAKE_TOOLCHAIN_FILE="${{ env.VCPKG_ROOT }}/scripts/buildsystems/vcpkg.cmake" `
