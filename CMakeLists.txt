@@ -8,6 +8,11 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
+# Static MSVC runtime (/MT) so the final exe doesn't need vcruntime/msvcp DLLs.
+# Must be combined with the x64-windows-static vcpkg triplet so Capstone and
+# Unicorn are also built as static libs (see the workflow's VCPKG_TARGET_TRIPLET).
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+
 find_package(capstone CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 
